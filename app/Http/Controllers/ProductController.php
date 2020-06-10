@@ -10,9 +10,18 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return HelperController::formattedResponse(
-            true, 200, null, Product::latest()->paginate(2)
-        );
+        $perPage = request()->perPage ?: 1;
+        $keyword = request()->q;
+
+        $products = new Product();
+
+        if ($keyword){
+            $products = $products->where('name', 'like', '%'.$keyword.'%');
+        }
+
+        $products = $products->latest()->paginate($perPage);
+
+        return HelperController::formattedResponse(true, 200, null, $products);
     }
 
     public function store(Request $request)
@@ -54,6 +63,26 @@ class ProductController extends Controller
             'description' => 'sometimes|max:955',
             'price' => 'required'
         ]);
+
+        if (isset($request->img)) {
+
+            //upload image
+            try {
+                $image = HelperController::imageUpload('img');
+                $request['image'] = $image;
+            } catch (Exception $e) {
+                return HelperController::formattedResponse(false, 500, $e->getMessage());
+            }
+
+            //check old image exits and delete
+            if (isset($product->image)){
+                try {
+                    HelperController::imageDelete($product->image);
+                } catch (Exception $e) {
+                    return HelperController::formattedResponse(false, 500, $e->getMessage());
+                }
+            }
+        }
 
         try {
             $product->update($request->all());;
