@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Http\Controllers\HelperController;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait ExceptionTrait {
@@ -16,6 +17,10 @@ trait ExceptionTrait {
 
         if ($e instanceof NotFoundHttpException){
             return HelperController::formattedResponse(false, 404, 'Route not found');
+        }
+
+        if ($e instanceof MethodNotAllowedHttpException){
+            return HelperController::formattedResponse(false, 404, $e->getMessage());
         }
 
         return parent::render($request, $e);

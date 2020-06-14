@@ -51,7 +51,7 @@ class HelperController extends Controller
 
     public static function imageDelete($image_name)
     {
-        $imagePath = config('custom.image_path').'/'.self::currentController().'/'.$image_name;
+        $imagePath = config('custom.image_path').self::currentController().'/'.$image_name;
 
         if(file_exists($imagePath)){
             unlink($imagePath);
