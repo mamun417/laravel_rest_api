@@ -18,7 +18,7 @@ class Product extends Model
 
     public function getImageUrlAttribute()
     {
-        $image_path = config('custom.image_path').'/'.HelperController::currentController();
-        return url("/$image_path/$this->image");
+        $image_path = config('custom.image_path').HelperController::currentController();
+        return preg_replace('/\s+/', '-', url("/$image_path/$this->image"));
     }
 }

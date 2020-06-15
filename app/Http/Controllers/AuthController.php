@@ -17,7 +17,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+       $this->middleware('auth:api', ['except' => ['login']]);
     }
 
     /**
@@ -37,7 +37,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if ($token = $this->guard()->attempt($credentials)) {
-            return ($this->respondWithToken($token));
+            return $this->respondWithToken($token);
         }
 
         return HelperController::formattedResponse(false, 404, 'email or password does not match');
@@ -79,13 +79,13 @@ class AuthController extends Controller
     /**
      * Get the token array structure.
      *
-     * @param  string $token
-     *
+     * @param string $token
      * @return JsonResponse
      */
-    protected function respondWithToken($token)
+    public function respondWithToken($token)
     {
         $data = [
+            'user' => $this->guard()->user(),
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $this->guard()->factory()->getTTL() * 60

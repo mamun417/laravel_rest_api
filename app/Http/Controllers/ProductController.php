@@ -32,18 +32,20 @@ class ProductController extends Controller
             'price' => 'required'
         ]);
 
+        $requested_data = $request->only(['name', 'description', 'price', 'img']);
+
         // upload image
         if (isset($request->img)) {
             try {
                 $image = HelperController::imageUpload('img');
-                $request['image'] = $image;
+                $requested_data['image'] = $image;
             } catch (Exception $e) {
                 return HelperController::formattedResponse(false, 500, $e->getMessage());
             }
         }
 
         try {
-            $product = Product::create($request->all());
+            $product = Product::create($requested_data);
         } catch (Exception $e) {
             return HelperController::formattedResponse(false, 500, $e->getMessage());
         }
@@ -64,12 +66,14 @@ class ProductController extends Controller
             'price' => 'required'
         ]);
 
+        $requested_data = $request->only(['name', 'description', 'price', 'img']);
+
         if (isset($request->img)) {
 
             //upload image
             try {
                 $image = HelperController::imageUpload('img');
-                $request['image'] = $image;
+                $requested_data['image'] = $image;
             } catch (Exception $e) {
                 return HelperController::formattedResponse(false, 500, $e->getMessage());
             }
@@ -85,7 +89,7 @@ class ProductController extends Controller
         }
 
         try {
-            $product->update($request->all());;
+            $product->update($requested_data);;
         } catch (Exception $e) {
             return HelperController::formattedResponse(false, 500, $e->getMessage());
         }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -56,5 +57,19 @@ class HelperController extends Controller
         if(file_exists($imagePath)){
             unlink($imagePath);
         }
+    }
+
+    /**
+     * @param array $excepts
+     * @param $request
+     * @return Collection
+     */
+    public static function filterFormRequest($excepts, $request)
+    {
+        return collect($excepts)->filter(function ($item) use ($request) {
+            return array_key_exists($item, $request) ?? false;
+        })->mapWithKeys(function ($item) use ($request){
+            return [$item => $request[$item]];
+        });
     }
 }
