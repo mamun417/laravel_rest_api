@@ -38,4 +38,23 @@ class UserController extends Controller
 
         return HelperController::formattedResponse(false, 500, 'there is a problem, please try again');
     }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|unique:users,email,'.$request->user()->id,
+            'address' => 'required|max:955'
+        ]);
+
+        $requested_data = $request->only(['name', 'email', 'address']);
+
+        try {
+            $request->user()->update($requested_data);
+        } catch (Exception $e) {
+            return HelperController::formattedResponse(false, 500, $e->getMessage());
+        }
+
+        return HelperController::formattedResponse(true, 200, null, $request->user());
+    }
 }

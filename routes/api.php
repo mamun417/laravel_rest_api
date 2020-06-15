@@ -1,8 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,21 +11,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/*Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});*/
-
-// those routes middleware called from AuthController
+//start auth routes
+Route::post('register', 'UserController@register');
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'AuthController@login');
+});
+
+Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
 });
-
-// User routes
-Route::post('register', 'UserController@register');
+//end auth routes
 
 Route::group(['middleware' => 'auth:api'], function () {
+
+    //product routes
     Route::apiResource('products', 'ProductController');
+
+    //user routes
+    Route::patch('profile-update', 'UserController@updateProfile');
 });
