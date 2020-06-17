@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Exception;
+use Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -24,10 +24,10 @@ class UserController extends Controller
             $requested_data['password'] = Hash::make($request->password);
             User::create($requested_data);
         } catch (Exception $e) {
-            return HelperController::formattedResponse(false, 500, $e->getMessage());
+            return HelperController::formattedResponse(500, $e->getMessage());
         }
 
-        // login after successfully registration
+        //login after successfully registration
         $authController = new AuthController();
 
         $credentials = $request->only('email', 'password');
@@ -36,25 +36,55 @@ class UserController extends Controller
             return $authController->respondWithToken($token);
         }
 
-        return HelperController::formattedResponse(false, 500, 'there is a problem, please try again');
+        return HelperController::formattedResponse(500, 'there is a problem, please try again');
     }
 
     public function updateProfile(Request $request)
     {
         $request->validate([
             'name' => 'required|max:255',
-            'email' => 'required|email|unique:users,email,'.$request->user()->id,
+            'email' => 'required|email|unique:users,email,'.auth()->user()->id,
             'address' => 'required|max:955'
         ]);
 
         $requested_data = $request->only(['name', 'email', 'address']);
 
         try {
-            $request->user()->update($requested_data);
+            auth()->user()->update($requested_data);
         } catch (Exception $e) {
-            return HelperController::formattedResponse(false, 500, $e->getMessage());
+            return HelperController::formattedResponse(500, $e->getMessage());
         }
 
-        return HelperController::formattedResponse(true, 200, null, $request->user());
+        return HelperController::formattedResponse(200, null, auth()->user());
+    }
+
+    public function checkPassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required'
+        ]);
+
+        $check = Hash::check($request->password, auth()->user()->password);
+
+        if ($check){
+            return HelperController::formattedResponse(200, 'password match');
+        }
+
+        return HelperController::formattedResponse(404, 'password does not match');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:6|confirmed'
+        ]);
+
+        try {
+            auth()->user()->update(['password' => Hash::make($request->password)]);
+        } catch (Exception $e) {
+            return HelperController::formattedResponse(500, $e->getMessage());
+        }
+
+        return HelperController::formattedResponse(200, 'password has been updated successful');
     }
 }

@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
+use Image;
+use Route;
 
 class HelperController extends Controller
 {
-    public static function formattedResponse($success, $code, $message, $data = '')
+    public static function formattedResponse($code, $message, $data = '')
     {
         $response = [];
-
-        $response['success'] = $success;
+        $response['success'] = $code == 200 ?? false;
 
         if ($data){
             $response['data'] = $data;

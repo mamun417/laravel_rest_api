@@ -31,4 +31,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     //user routes
     Route::patch('profile-update', 'UserController@updateProfile');
+    Route::post('check-password', 'UserController@checkPassword');
+    Route::patch('change-password', 'UserController@changePassword');
 });

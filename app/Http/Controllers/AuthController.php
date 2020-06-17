@@ -30,7 +30,7 @@ class AuthController extends Controller
             return $this->respondWithToken($token);
         }
 
-        return HelperController::formattedResponse(false, 404, 'email or password does not match');
+        return HelperController::formattedResponse(404, 'email or password does not match');
 
         //return response()->json(['error' => 'Unauthorized'], 404);
     }
@@ -42,7 +42,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return HelperController::formattedResponse(true, 200, null, $this->guard()->user());
+        return HelperController::formattedResponse(200, null, $this->guard()->user());
     }
 
     /**
@@ -53,7 +53,7 @@ class AuthController extends Controller
     public function logout()
     {
         $this->guard()->logout();
-        return HelperController::formattedResponse(true, 200, 'Successfully logged out');
+        return HelperController::formattedResponse(200, 'Successfully logged out');
     }
 
     /**
@@ -81,7 +81,7 @@ class AuthController extends Controller
             'expires_in' => $this->guard()->factory()->getTTL() * 60
         ];
 
-        return HelperController::formattedResponse(true, 200, null, $data);
+        return HelperController::formattedResponse(200, null, $data);
 
         /*return response()->json([
             'access_token' => $token,
