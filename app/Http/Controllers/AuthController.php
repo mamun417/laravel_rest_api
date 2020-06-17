@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -30,7 +29,7 @@ class AuthController extends Controller
             return $this->respondWithToken($token);
         }
 
-        return HelperController::formattedResponse(404, 'email or password does not match');
+        return HelperController::apiResponse(404, 'email or password does not match');
 
         //return response()->json(['error' => 'Unauthorized'], 404);
     }
@@ -42,7 +41,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return HelperController::formattedResponse(200, null, $this->guard()->user());
+        return HelperController::apiResponse(200, null, '', $this->guard()->user());
     }
 
     /**
@@ -53,7 +52,7 @@ class AuthController extends Controller
     public function logout()
     {
         $this->guard()->logout();
-        return HelperController::formattedResponse(200, 'Successfully logged out');
+        return HelperController::apiResponse(200, 'Successfully logged out');
     }
 
     /**
@@ -81,7 +80,7 @@ class AuthController extends Controller
             'expires_in' => $this->guard()->factory()->getTTL() * 60
         ];
 
-        return HelperController::formattedResponse(200, null, $data);
+        return HelperController::apiResponse(200, null, '', $data);
 
         /*return response()->json([
             'access_token' => $token,

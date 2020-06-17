@@ -21,7 +21,7 @@ class ProductController extends Controller
 
         $products = $products->latest()->paginate($perPage);
 
-        return HelperController::formattedResponse(200, '', $products);
+        return HelperController::apiResponse(200, '', 'products', $products);
     }
 
     public function store(Request $request)
@@ -40,22 +40,22 @@ class ProductController extends Controller
                 $image = HelperController::imageUpload('img');
                 $requested_data['image'] = $image;
             } catch (Exception $e) {
-                return HelperController::formattedResponse(500, $e->getMessage());
+                return HelperController::apiResponse(500, $e->getMessage());
             }
         }
 
         try {
             $product = Product::create($requested_data);
         } catch (Exception $e) {
-            return HelperController::formattedResponse(500, $e->getMessage());
+            return HelperController::apiResponse(500, $e->getMessage());
         }
 
-        return HelperController::formattedResponse(200, null, $product);
+        return HelperController::apiResponse(200, '', 'product', $product);
     }
 
     public function show(Product $product)
     {
-        return HelperController::formattedResponse(200, null, $product);
+        return HelperController::apiResponse(200, '', 'product', $product);
     }
 
     public function update(Request $request, Product $product)
@@ -75,7 +75,7 @@ class ProductController extends Controller
                 $image = HelperController::imageUpload('img');
                 $requested_data['image'] = $image;
             } catch (Exception $e) {
-                return HelperController::formattedResponse(500, $e->getMessage());
+                return HelperController::apiResponse(500, $e->getMessage());
             }
 
             //check old image exits and delete
@@ -83,7 +83,7 @@ class ProductController extends Controller
                 try {
                     HelperController::imageDelete($product->image);
                 } catch (Exception $e) {
-                    return HelperController::formattedResponse(false, 500, $e->getMessage());
+                    return HelperController::apiResponse(500, $e->getMessage());
                 }
             }
         }
@@ -91,10 +91,10 @@ class ProductController extends Controller
         try {
             $product->update($requested_data);;
         } catch (Exception $e) {
-            return HelperController::formattedResponse(500, $e->getMessage());
+            return HelperController::apiResponse(500, $e->getMessage());
         }
 
-        return HelperController::formattedResponse(200, null, $product);
+        return HelperController::apiResponse(200, null, 'product', $product);
     }
 
     public function destroy(Product $product)
@@ -102,9 +102,9 @@ class ProductController extends Controller
         try {
             $product->delete();
         } catch (Exception $e) {
-            return HelperController::formattedResponse(500, $e->getMessage());
+            return HelperController::apiResponse(500, $e->getMessage());
         }
 
-        return HelperController::formattedResponse(200, null, ['id' => $product->id]);
+        return HelperController::apiResponse(200, null, 'product', ['id' => $product->id]);
     }
 }

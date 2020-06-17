@@ -24,7 +24,7 @@ class UserController extends Controller
             $requested_data['password'] = Hash::make($request->password);
             User::create($requested_data);
         } catch (Exception $e) {
-            return HelperController::formattedResponse(500, $e->getMessage());
+            return HelperController::apiResponse(500, $e->getMessage());
         }
 
         //login after successfully registration
@@ -36,7 +36,7 @@ class UserController extends Controller
             return $authController->respondWithToken($token);
         }
 
-        return HelperController::formattedResponse(500, 'there is a problem, please try again');
+        return HelperController::apiResponse(500, 'there is a problem, please try again');
     }
 
     public function updateProfile(Request $request)
@@ -52,10 +52,10 @@ class UserController extends Controller
         try {
             auth()->user()->update($requested_data);
         } catch (Exception $e) {
-            return HelperController::formattedResponse(500, $e->getMessage());
+            return HelperController::apiResponse(500, $e->getMessage());
         }
 
-        return HelperController::formattedResponse(200, null, auth()->user());
+        return HelperController::apiResponse(200, null, auth()->user());
     }
 
     public function checkPassword(Request $request)
@@ -67,10 +67,10 @@ class UserController extends Controller
         $check = Hash::check($request->password, auth()->user()->password);
 
         if ($check){
-            return HelperController::formattedResponse(200, 'password match');
+            return HelperController::apiResponse(200, 'password match');
         }
 
-        return HelperController::formattedResponse(404, 'password does not match');
+        return HelperController::apiResponse(404, 'password does not match');
     }
 
     public function changePassword(Request $request)
@@ -82,9 +82,9 @@ class UserController extends Controller
         try {
             auth()->user()->update(['password' => Hash::make($request->password)]);
         } catch (Exception $e) {
-            return HelperController::formattedResponse(500, $e->getMessage());
+            return HelperController::apiResponse(500, $e->getMessage());
         }
 
-        return HelperController::formattedResponse(200, 'password has been updated successful');
+        return HelperController::apiResponse(200, 'password has been updated successful');
     }
 }

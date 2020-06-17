@@ -8,13 +8,13 @@ use Route;
 
 class HelperController extends Controller
 {
-    public static function formattedResponse($code, $message, $data = '')
+    public static function apiResponse($code, $message, $key = 'data', $data = '')
     {
         $response = [];
         $response['success'] = $code == 200 ?? false;
 
         if ($data){
-            $response['data'] = $data;
+            $response[$key] = $data;
         }else{
             $response['message'] = $message;
         }

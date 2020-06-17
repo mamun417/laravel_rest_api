@@ -13,13 +13,13 @@ trait ExceptionTrait {
     public function apiException($e, $request)
     {
         if ($e instanceof ModelNotFoundException){
-            return HelperController::formattedResponse(false, 404, $e->getMessage());
+            return HelperController::apiResponse(404, $e->getMessage());
         }elseif ($e instanceof NotFoundHttpException){
-            return HelperController::formattedResponse(false, 404, 'Route not found');
+            return HelperController::apiResponse(404, 'Route not found');
         }elseif ($e instanceof MethodNotAllowedHttpException){
-            return HelperController::formattedResponse(false, 404, $e->getMessage());
+            return HelperController::apiResponse(404, $e->getMessage());
         }elseif ($e instanceof BadMethodCallException){
-            return HelperController::formattedResponse(false, 404, $e->getMessage());
+            return HelperController::apiResponse(404, $e->getMessage());
         }
 
         return parent::render($request, $e);
