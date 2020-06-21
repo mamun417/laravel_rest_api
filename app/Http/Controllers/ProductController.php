@@ -10,6 +10,7 @@ class ProductController extends Controller
 {
     public function index()
     {
+        info('ok');
         $perPage = request()->perPage ?? 1;
         $keyword = request()->q;
 

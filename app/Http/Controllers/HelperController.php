@@ -8,13 +8,15 @@ use Route;
 
 class HelperController extends Controller
 {
-    public static function apiResponse($code, $message, $key = 'data', $data = '')
+    public static function apiResponse($code, $message, $key = '', $data = '')
     {
         $response = [];
         $response['success'] = $code == 200 ?? false;
 
         if ($data){
-            $response[$key] = $data;
+            if ($key){
+                $response[$key] = $data;
+            }else $response += $data;
         }else{
             $response['message'] = $message;
         }

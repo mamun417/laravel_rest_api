@@ -11,25 +11,28 @@
 |
 */
 
-//start auth routes
-Route::post('register', 'UserController@register');
-Route::group(['prefix' => 'auth'], function () {
+//start auth
+Route::post('register', 'ApiAuth\RegisterController@register');
+Route::group(['prefix' => 'auth', 'namespace' => 'ApiAuth'], function () {
     Route::post('login', 'AuthController@login');
 });
 
-Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
+Route::group(['middleware' => 'auth:api', 'prefix' => 'auth', 'namespace' => 'ApiAuth'], function () {
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
 });
-//end auth routes
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::post('password/email', 'ApiAuth\ForgotPasswordController@sendResetLinkEmail');
+Route::post('password/reset', 'ApiAuth\ResetPasswordController@reset');
+//end auth
 
-    //product routes
+Route::group(['middleware' => 'auth:api'], function ()
+{
+    //product
     Route::apiResource('products', 'ProductController');
 
-    //user routes
+    //user
     Route::patch('profile-update', 'UserController@updateProfile');
     Route::post('check-password', 'UserController@checkPassword');
     Route::patch('change-password', 'UserController@changePassword');

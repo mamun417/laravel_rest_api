@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiAuth;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\HelperController;
 use Auth;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\JsonResponse;
@@ -41,7 +43,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return HelperController::apiResponse(200, null, '', $this->guard()->user());
+        return HelperController::apiResponse(200, null, 'user', $this->guard()->user());
     }
 
     /**
@@ -80,7 +82,7 @@ class AuthController extends Controller
             'expires_in' => $this->guard()->factory()->getTTL() * 60
         ];
 
-        return HelperController::apiResponse(200, null, '', $data);
+        return HelperController::apiResponse(200, '', '', $data);
 
         /*return response()->json([
             'access_token' => $token,
