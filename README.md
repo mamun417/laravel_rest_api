@@ -1,2 +1,2 @@
-# laravel_rest_api
+# laravel_authentication_api
 Laravel rest API
