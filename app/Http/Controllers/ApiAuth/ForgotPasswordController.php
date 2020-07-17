@@ -26,7 +26,7 @@ class ForgotPasswordController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'url' => 'required' //destination where email reset link will be send
+            'url' => 'required' //reset password link of frontend
         ]);
     }
 

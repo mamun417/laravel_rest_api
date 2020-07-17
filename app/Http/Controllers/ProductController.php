@@ -20,7 +20,7 @@ class ProductController extends Controller
             $products = $products->where('name', 'like', '%'.$keyword.'%');
         }
 
-        $products = $products->latest()->paginate($perPage);
+        $products = $products->latest()->get();
 
         return HelperController::apiResponse(200, '', 'products', $products);
     }

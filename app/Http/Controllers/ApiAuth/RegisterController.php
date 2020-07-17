@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiAuth;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HelperController;
 use App\User;
+use Hash;
 use Illuminate\Http\Request;
 use Exception;
 
