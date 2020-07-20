@@ -24,16 +24,16 @@ class UserController extends Controller
             return HelperController::apiResponse(500, $e->getMessage());
         }
 
-        return HelperController::apiResponse(200, null, auth()->user());
+        return HelperController::apiResponse(200, null, 'user', auth()->user());
     }
 
     public function checkPassword(Request $request)
     {
         $request->validate([
-            'password' => 'required'
+            'old_password' => 'required'
         ]);
 
-        $check = Hash::check($request->password, auth()->user()->password);
+        $check = Hash::check($request->old_password, auth()->user()->password);
 
         if ($check){
             return HelperController::apiResponse(200, 'password match');
