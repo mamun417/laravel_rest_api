@@ -15,11 +15,11 @@
 Route::post('register', 'ApiAuth\RegisterController@register');
 Route::group(['prefix' => 'auth', 'namespace' => 'ApiAuth'], function () {
     Route::post('login', 'AuthController@login');
+    Route::post('refresh', 'AuthController@refresh');
 });
 
 Route::group(['middleware' => 'auth:api', 'prefix' => 'auth', 'namespace' => 'ApiAuth'], function () {
     Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
 });
 
@@ -36,4 +36,5 @@ Route::group(['middleware' => 'auth:api'], function ()
     Route::patch('profile/update', 'UserController@updateProfile');
     Route::post('password/check', 'UserController@checkPassword');
     Route::patch('password/change', 'UserController@changePassword');
+    Route::post('change/image', 'UserController@changeImage');
 });

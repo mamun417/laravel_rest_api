@@ -56,4 +56,37 @@ class UserController extends Controller
 
         return HelperController::apiResponse(200, 'password has been updated successful');
     }
+
+    public function changeImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required'
+        ]);
+
+        $requested_data = $request->only('image');
+
+        if ($request->image) {
+
+            //upload image
+            try {
+                $image = HelperController::imageUpload('image');
+                $requested_data['image'] = $image;
+            } catch (Exception $e) {
+                return HelperController::apiResponse(500, $e->getMessage());
+            }
+
+            //check old image exits and delete
+            if (isset(auth()->user()->image)){
+                try {
+                    HelperController::imageDelete(auth()->user()->image);
+                } catch (Exception $e) {
+                    return HelperController::apiResponse(500, $e->getMessage());
+                }
+            }
+        }
+
+        auth()->user()->update($requested_data);
+
+        return HelperController::apiResponse(200, 'image has been updated successful');
+    }
 }
