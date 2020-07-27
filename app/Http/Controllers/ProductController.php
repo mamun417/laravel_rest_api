@@ -37,12 +37,8 @@ class ProductController extends Controller
 
         //upload image
         if (isset($request->img)) {
-            try {
-                $image = HelperController::imageUpload('img');
-                $requested_data['image'] = $image;
-            } catch (Exception $e) {
-                return HelperController::apiResponse(500, $e->getMessage());
-            }
+            $image = HelperController::imageUpload('img');
+            $requested_data['image'] = $image;
         }
 
         try {
@@ -72,12 +68,8 @@ class ProductController extends Controller
         if (isset($request->img)) {
 
             //upload image
-            try {
-                $image = HelperController::imageUpload('img');
-                $requested_data['image'] = $image;
-            } catch (Exception $e) {
-                return HelperController::apiResponse(500, $e->getMessage());
-            }
+            $image = HelperController::imageUpload('img');
+            $requested_data['image'] = $image;
 
             //check old image exits and delete
             if (isset($product->image)){

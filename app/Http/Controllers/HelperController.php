@@ -40,7 +40,7 @@ class HelperController extends Controller
         ]);
 
         $real_image = request()->file($field_name);
-        $image_name = time().'-'.$real_image->getClientOriginalName();
+        $image_name = time().'-'.preg_replace('/\s+/', '-', $real_image->getClientOriginalName());
         $imagePath = config('custom.image_path').'/'.self::currentController().'/'.$image_name;
 
         Image::make($real_image)->save($imagePath);
@@ -50,10 +50,12 @@ class HelperController extends Controller
 
     public static function imageDelete($image_name)
     {
-        $imagePath = config('custom.image_path').self::currentController().'/'.$image_name;
+        if ($image_name){
+            $imagePath = config('custom.image_path').self::currentController().'/'.$image_name;
 
-        if(file_exists($imagePath)){
-            unlink($imagePath);
+            if(file_exists($imagePath)){
+                unlink($imagePath);
+            }
         }
     }
 

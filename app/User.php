@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Http\Controllers\HelperController;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -63,6 +64,16 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute()
+    {
+        $image_path = config('custom.image_path').'user';
+        if ($this->image) {
+            return preg_replace('/\s+/', '-', url("/$image_path/$this->image"));
+        }
+    }
 
     public function sendPasswordResetNotification($token)
     {

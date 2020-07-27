@@ -68,12 +68,8 @@ class UserController extends Controller
         if ($request->image) {
 
             //upload image
-            try {
-                $image = HelperController::imageUpload('image');
-                $requested_data['image'] = $image;
-            } catch (Exception $e) {
-                return HelperController::apiResponse(500, $e->getMessage());
-            }
+            $image = HelperController::imageUpload('image');
+            $requested_data['image'] = $image;
 
             //check old image exits and delete
             if (isset(auth()->user()->image)){
@@ -87,6 +83,6 @@ class UserController extends Controller
 
         auth()->user()->update($requested_data);
 
-        return HelperController::apiResponse(200, 'image has been updated successful');
+        return HelperController::apiResponse(200, null, 'user', auth()->user());
     }
 }
