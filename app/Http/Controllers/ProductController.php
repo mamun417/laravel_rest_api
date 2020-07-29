@@ -10,7 +10,6 @@ class ProductController extends Controller
 {
     public function index()
     {
-        info('ok');
         $perPage = request()->perPage ?? 1;
         $keyword = request()->q;
 
@@ -30,14 +29,14 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'description' => 'sometimes|max:955',
-            'price' => 'required'
+            'price' => 'required|numeric'
         ]);
 
-        $requested_data = $request->only(['name', 'description', 'price', 'img']);
+        $requested_data = $request->only(['name', 'description', 'price']);
 
         //upload image
-        if (isset($request->img)) {
-            $image = HelperController::imageUpload('img');
+        if (isset($request->image)) {
+            $image = HelperController::imageUpload('image');
             $requested_data['image'] = $image;
         }
 
@@ -60,24 +59,18 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|max:255|unique:products,name,'.$product->id,
             'description' => 'sometimes|max:955',
-            'price' => 'required'
+            'price' => 'required|numeric'
         ]);
 
-        $requested_data = $request->only(['name', 'description', 'price', 'img']);
+        $requested_data = $request->only(['name', 'description', 'price']);
 
-        if (isset($request->img)) {
+        if (isset($request->image)) {
 
-            //upload image
-            $image = HelperController::imageUpload('img');
+            $image = HelperController::imageUpload('image');
             $requested_data['image'] = $image;
 
-            //check old image exits and delete
             if (isset($product->image)){
-                try {
-                    HelperController::imageDelete($product->image);
-                } catch (Exception $e) {
-                    return HelperController::apiResponse(500, $e->getMessage());
-                }
+                HelperController::imageDelete($product->image);
             }
         }
 
@@ -94,6 +87,7 @@ class ProductController extends Controller
     {
         try {
             $product->delete();
+            HelperController::imageDelete($product->image);
         } catch (Exception $e) {
             return HelperController::apiResponse(500, $e->getMessage());
         }

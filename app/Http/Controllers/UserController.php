@@ -67,17 +67,11 @@ class UserController extends Controller
 
         if ($request->image) {
 
-            //upload image
             $image = HelperController::imageUpload('image');
             $requested_data['image'] = $image;
 
-            //check old image exits and delete
             if (isset(auth()->user()->image)){
-                try {
-                    HelperController::imageDelete(auth()->user()->image);
-                } catch (Exception $e) {
-                    return HelperController::apiResponse(500, $e->getMessage());
-                }
+                HelperController::imageDelete(auth()->user()->image);
             }
         }
 

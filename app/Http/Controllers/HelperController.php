@@ -33,6 +33,13 @@ class HelperController extends Controller
 
     public static function imageUpload($field_name)
     {
+        /* base_64 image upload
+        $real_image = request($field_name);
+        list($type, $data) = explode(';', $real_image);
+        list(, $ext) = explode('/', $type);
+        $image_name = time().'.'.$ext;
+        $imagePath = config('custom.image_path').self::currentController().'/'.$image_name;*/
+
         request()->validate([
             $field_name => 'mimes:jpg,jpeg,bmp,png|max:1024',
         ],[
