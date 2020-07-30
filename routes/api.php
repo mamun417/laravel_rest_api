@@ -30,6 +30,7 @@ Route::patch('password/reset', 'ApiAuth\ResetPasswordController@reset');
 Route::group(['middleware' => 'auth:api'], function ()
 {
     //product
+    Route::patch('products/change-status/{product}', 'ProductController@changeStatus');
     Route::apiResource('products', 'ProductController');
 
     //user

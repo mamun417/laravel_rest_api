@@ -15,8 +15,8 @@ class ProductController extends Controller
 
         $products = new Product();
 
-        if ($keyword){
-            $products = $products->where('name', 'like', '%'.$keyword.'%');
+        if ($keyword) {
+            $products = $products->where('name', 'like', '%' . $keyword . '%');
         }
 
         $products = $products->latest()->get();
@@ -57,7 +57,7 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'name' => 'required|max:255|unique:products,name,'.$product->id,
+            'name' => 'required|max:255|unique:products,name,' . $product->id,
             'description' => 'sometimes|max:955',
             'price' => 'required|numeric'
         ]);
@@ -69,7 +69,7 @@ class ProductController extends Controller
             $image = HelperController::imageUpload('image');
             $requested_data['image'] = $image;
 
-            if (isset($product->image)){
+            if (isset($product->image)) {
                 HelperController::imageDelete($product->image);
             }
         }
@@ -93,5 +93,11 @@ class ProductController extends Controller
         }
 
         return HelperController::apiResponse(200, null, 'product', ['id' => $product->id]);
+    }
+
+    public function changeStatus(Product $product)
+    {
+        $product->update(['status' => !$product->status]);
+        return HelperController::apiResponse(200, '', 'product', $product);
     }
 }

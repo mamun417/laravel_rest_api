@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Product extends Model
 {
-    protected $fillable = ['name', 'description', 'price', 'image'];
+    protected $fillable = ['status', 'name', 'description', 'price', 'image'];
 
     protected $appends = ['image_url'];
 
