@@ -10,16 +10,29 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $perPage = request()->perPage ?? 1;
-        $keyword = request()->q;
+        $per_page = request()->per_page ?? 2;
+        $search = request()->search;
+        $filter = request()->filter;
 
         $products = new Product();
 
-        if ($keyword) {
-            $products = $products->where('name', 'like', '%' . $keyword . '%');
+        if ($search) {
+            $search = '%' . $search . '%';
+            $products = $products->where(function ($query) use ($search) {
+                $query->where('name', 'like', $search)
+                    ->orWhere('description', 'like', $search);
+            });
         }
 
-        $products = $products->latest()->get();
+        if ($filter) {
+            $products = $products->where('status', $filter === 'active');
+        }
+
+        $products = $products->latest()->paginate($per_page);
+
+        if (request()->page > $products->lastPage()) {
+            return redirect($products->url($products->lastPage())."&search=$search&filter=$filter");
+        }
 
         return HelperController::apiResponse(200, '', 'products', $products);
     }
