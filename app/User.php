@@ -11,6 +11,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * @method static create(array $requested_data)
+ * @method static find($id)
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -69,10 +70,15 @@ class User extends Authenticatable implements JWTSubject
 
     public function getImageUrlAttribute()
     {
-        $image_path = config('custom.image_path').'user';
+        $image_path = config('custom.image_path') . 'user';
         if ($this->image) {
             return preg_replace('/\s+/', '-', url("/$image_path/$this->image"));
         }
+    }
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class);
     }
 
     public function sendPasswordResetNotification($token)

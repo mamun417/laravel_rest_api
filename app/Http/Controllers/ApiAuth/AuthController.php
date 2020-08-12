@@ -4,6 +4,8 @@ namespace App\Http\Controllers\ApiAuth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HelperController;
+use App\Skill;
+use App\User;
 use Auth;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\JsonResponse;
@@ -43,7 +45,19 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return HelperController::apiResponse(200, null, 'user', $this->guard()->user());
+        //$this->guard()->user()->skills()->sync([1,2]);
+
+        $userInfo = $this->guard()->user();
+
+        $userSkills = User::find($this->guard()->id())->first()->skills;
+
+        $userSkills = $userSkills->map(function ($item, $key) {
+            return ['label' => $item->name, 'code' => $item->id];
+        });
+
+        $userInfo['skills'] = $userSkills;
+
+        return HelperController::apiResponse(200, null, 'user', $userInfo);
     }
 
     /**

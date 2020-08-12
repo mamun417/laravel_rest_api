@@ -11,7 +11,7 @@
 |
 */
 
-//start auth
+// start auth
 Route::post('register', 'ApiAuth\RegisterController@register');
 Route::group(['prefix' => 'auth', 'namespace' => 'ApiAuth'], function () {
     Route::post('login', 'AuthController@login');
@@ -25,17 +25,22 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth', 'namespace' => 'Ap
 
 Route::post('password/email', 'ApiAuth\ForgotPasswordController@sendResetLinkEmail');
 Route::patch('password/reset', 'ApiAuth\ResetPasswordController@reset');
-//end auth
+// end auth
 
 Route::group(['middleware' => 'auth:api'], function ()
 {
-    //product
+    // product
     Route::patch('products/change-status/{product}', 'ProductController@changeStatus');
     Route::apiResource('products', 'ProductController');
 
-    //user
+    // skill
+    //Route::get('skill-list', 'SkillController@getSkillList');
+
+    // user
     Route::patch('profile/update', 'UserController@updateProfile');
     Route::post('password/check', 'UserController@checkPassword');
     Route::patch('password/change', 'UserController@changePassword');
     Route::post('change/image', 'UserController@changeImage');
 });
+
+Route::get('skill-list', 'SkillController@getSkillList');
