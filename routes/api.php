@@ -31,6 +31,7 @@ Route::group(['middleware' => 'auth:api'], function ()
 {
     // product
     Route::patch('products/change-status/{product}', 'ProductController@changeStatus');
+    Route::get('products/count-info', 'ProductController@countInfo');
     Route::apiResource('products', 'ProductController');
 
     // skill

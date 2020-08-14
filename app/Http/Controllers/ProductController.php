@@ -10,6 +10,8 @@ class ProductController extends Controller
 {
     public function index()
     {
+        info('ok');
+
         $per_page = request()->per_page ?? 2;
         $search = request()->search;
         $filter = request()->filter;
@@ -35,6 +37,21 @@ class ProductController extends Controller
         }
 
         return HelperController::apiResponse(200, '', 'products', $products);
+    }
+
+    public function countInfo()
+    {
+        $products = Product::all();
+        $count_active = $products->where('status',true)->count();
+        $count_inactive = $products->where('status',false)->count();
+
+        $count_info = [
+            'total' => $count_active+$count_inactive,
+            'active' => $count_active,
+            'inactive' => $count_inactive,
+        ];
+
+        return HelperController::apiResponse(200, '', 'count_info', $count_info);
     }
 
     public function store(Request $request)

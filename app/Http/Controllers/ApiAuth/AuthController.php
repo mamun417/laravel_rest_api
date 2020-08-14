@@ -45,8 +45,6 @@ class AuthController extends Controller
      */
     public function me()
     {
-        //$this->guard()->user()->skills()->sync([1,2]);
-
         $userInfo = $this->guard()->user();
 
         $userSkills = User::find($this->guard()->id())->first()->skills;

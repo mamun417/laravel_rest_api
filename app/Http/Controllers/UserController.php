@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Exception;
 use Hash;
 use Illuminate\Http\Request;
@@ -10,21 +11,33 @@ class UserController extends Controller
 {
     public function updateProfile(Request $request)
     {
+        info(request('skills'));
+
         $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email,'.auth()->user()->id,
             'address' => 'required|max:955'
         ]);
 
-        $requested_data = $request->only(['name', 'email', 'address']);
+        $requested_data = $request->only(['name', 'email', 'address', 'skills']);
+
+        $skills = request('skills');
+
+        $skills = collect($skills)->map(function ($skill) {
+           return $skill['code'];
+        });
 
         try {
             auth()->user()->update($requested_data);
+            auth()->user()->skills()->sync($skills);
         } catch (Exception $e) {
             return HelperController::apiResponse(500, $e->getMessage());
         }
 
-        return HelperController::apiResponse(200, null, 'user', auth()->user());
+        $user_info = auth()->user();
+        $user_info['skills'] = request('skills');
+
+        return HelperController::apiResponse(200, null, 'user', $user_info);
     }
 
     public function checkPassword(Request $request)
@@ -77,6 +90,16 @@ class UserController extends Controller
 
         auth()->user()->update($requested_data);
 
-        return HelperController::apiResponse(200, null, 'user', auth()->user());
+        $userInfo = auth()->user();
+
+        $userSkills = User::find(auth()->id())->first()->skills;
+
+        $userSkills = $userSkills->map(function ($item, $key) {
+            return ['label' => $item->name, 'code' => $item->id];
+        });
+
+        $userInfo['skills'] = $userSkills;
+
+        return HelperController::apiResponse(200, null, 'user', $userInfo);
     }
 }
