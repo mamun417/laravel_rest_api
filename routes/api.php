@@ -32,10 +32,11 @@ Route::group(['middleware' => 'auth:api'], function ()
     // product
     Route::patch('products/change-status/{product}', 'ProductController@changeStatus');
     Route::get('products/count-info', 'ProductController@countInfo');
+    Route::delete('products/delete', 'ProductController@destroy');
     Route::apiResource('products', 'ProductController');
 
     // skill
-    //Route::get('skill-list', 'SkillController@getSkillList');
+    Route::get('skill-list', 'SkillController@getSkillList');
 
     // user
     Route::patch('profile/update', 'UserController@updateProfile');
@@ -44,4 +45,3 @@ Route::group(['middleware' => 'auth:api'], function ()
     Route::post('change/image', 'UserController@changeImage');
 });
 
-Route::get('skill-list', 'SkillController@getSkillList');

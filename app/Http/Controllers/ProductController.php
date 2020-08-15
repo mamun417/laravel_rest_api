@@ -10,8 +10,6 @@ class ProductController extends Controller
 {
     public function index()
     {
-        info('ok');
-
         $per_page = request()->per_page ?? 2;
         $search = request()->search;
         $filter = request()->filter;
@@ -113,16 +111,17 @@ class ProductController extends Controller
         return HelperController::apiResponse(200, null, 'product', $product);
     }
 
-    public function destroy(Product $product)
+    public function destroy(Request $request)
     {
-        try {
-            $product->delete();
+        $products = Product::whereIn('id', $request->ids);
+
+        foreach ($products->get() as $product) {
             HelperController::imageDelete($product->image);
-        } catch (Exception $e) {
-            return HelperController::apiResponse(500, $e->getMessage());
         }
 
-        return HelperController::apiResponse(200, null, 'product', ['id' => $product->id]);
+        $products->delete();
+
+        return HelperController::apiResponse(200, null, 'product', ['ids' => $request->ids]);
     }
 
     public function changeStatus(Product $product)

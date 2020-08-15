@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @method static create(array $all)
  * @method static latest()
+ * @method static whereIn(string $string, $ids)
  */
 class Product extends Model
 {
