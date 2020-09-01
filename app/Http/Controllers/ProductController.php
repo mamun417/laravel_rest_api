@@ -6,7 +6,7 @@ use App\Product;
 use Exception;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class ProductController extends ApiController
 {
     public function index()
     {
@@ -34,7 +34,7 @@ class ProductController extends Controller
             return redirect($products->url($products->lastPage())."&search=$search&filter=$filter");
         }
 
-        return HelperController::apiResponse(200, '', 'products', $products);
+        return $this->successResponse(['products' => $products], 200);
     }
 
     public function countInfo()
@@ -49,7 +49,7 @@ class ProductController extends Controller
             'inactive' => $count_inactive,
         ];
 
-        return HelperController::apiResponse(200, '', 'count_info', $count_info);
+        return $this->successResponse(['count_info' => $count_info], 200);
     }
 
     public function store(Request $request)
@@ -68,18 +68,14 @@ class ProductController extends Controller
             $requested_data['image'] = $image;
         }
 
-        try {
-            $product = Product::create($requested_data);
-        } catch (Exception $e) {
-            return HelperController::apiResponse(500, $e->getMessage());
-        }
+        $product = Product::create($requested_data);
 
-        return HelperController::apiResponse(200, '', 'product', $product);
+        return $this->successResponse(['product' => $product], 200);
     }
 
     public function show(Product $product)
     {
-        return HelperController::apiResponse(200, '', 'product', $product);
+        return $this->successResponse(['product' => $product], 200);
     }
 
     public function update(Request $request, Product $product)
@@ -102,13 +98,9 @@ class ProductController extends Controller
             }
         }
 
-        try {
-            $product->update($requested_data);;
-        } catch (Exception $e) {
-            return HelperController::apiResponse(500, $e->getMessage());
-        }
+        $product->update($requested_data);;
 
-        return HelperController::apiResponse(200, null, 'product', $product);
+        return $this->successResponse(['product' => $product], 200);
     }
 
     public function destroy(Request $request)
@@ -121,12 +113,12 @@ class ProductController extends Controller
 
         $products->delete();
 
-        return HelperController::apiResponse(200, null, 'product', ['ids' => $request->ids]);
+        return $this->successResponse(['product' => ['ids' => $request->ids]], 200);
     }
 
     public function changeStatus(Product $product)
     {
         $product->update(['status' => !$product->status]);
-        return HelperController::apiResponse(200, '', 'product', $product);
+        return $this->successResponse(['product' => $product], 200);
     }
 }
