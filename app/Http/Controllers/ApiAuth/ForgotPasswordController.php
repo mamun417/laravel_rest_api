@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\ApiAuth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\HelperController;
+use App\Http\Controllers\ApiController;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 
-class ForgotPasswordController extends Controller
+class ForgotPasswordController extends ApiController
 {
     /*
     |--------------------------------------------------------------------------
@@ -32,6 +31,6 @@ class ForgotPasswordController extends Controller
 
     protected function sendResetLinkResponse(Request $request, $response)
     {
-        return HelperController::apiResponse(200, 'email has been send successful');
+        return $this->successMessage('email has been send successful', 200);
     }
 }

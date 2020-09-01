@@ -13,6 +13,9 @@
 
 // start auth
 Route::post('register', 'ApiAuth\RegisterController@register');
+Route::post('password/email', 'ApiAuth\ForgotPasswordController@sendResetLinkEmail');
+Route::put('password/reset', 'ApiAuth\ResetPasswordController@reset');
+
 Route::group(['prefix' => 'auth', 'namespace' => 'ApiAuth'], function () {
     Route::post('login', 'AuthController@login');
     Route::post('refresh', 'AuthController@refresh');
@@ -22,9 +25,6 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth', 'namespace' => 'Ap
     Route::post('logout', 'AuthController@logout');
     Route::post('me', 'AuthController@me');
 });
-
-Route::post('password/email', 'ApiAuth\ForgotPasswordController@sendResetLinkEmail');
-Route::patch('password/reset', 'ApiAuth\ResetPasswordController@reset');
 // end auth
 
 Route::group(['middleware' => 'auth:api'], function ()

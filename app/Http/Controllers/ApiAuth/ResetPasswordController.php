@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers\ApiAuth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\HelperController;
-use App\Providers\RouteServiceProvider;
+use App\Http\Controllers\ApiController;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 
-class ResetPasswordController extends Controller
+class ResetPasswordController extends ApiController
 {
     /*
     |--------------------------------------------------------------------------
@@ -26,6 +23,6 @@ class ResetPasswordController extends Controller
 
     protected function sendResetResponse(Request $request, $response)
     {
-        return HelperController::apiResponse(200, 'password has been reset successful');
+        return $this->successMessage( 'password has been reset successful', 200);
     }
 }

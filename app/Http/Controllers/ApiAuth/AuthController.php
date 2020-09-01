@@ -2,24 +2,13 @@
 
 namespace App\Http\Controllers\ApiAuth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\HelperController;
-use App\Skill;
+use App\Http\Controllers\ApiController;
 use App\User;
 use Auth;
-use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
-    /**
-     * Get a JWT token via given credentials.
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -33,16 +22,9 @@ class AuthController extends Controller
             return $this->respondWithToken($token);
         }
 
-        return HelperController::apiResponse(404, 'email or password does not match');
-
-        //return response()->json(['error' => 'Unauthorized'], 404);
+        return $this->errorMessage('email or password does not match', 404);
     }
 
-    /**
-     * Get the authenticated User
-     *
-     * @return JsonResponse
-     */
     public function me()
     {
         $userInfo = $this->guard()->user();
@@ -55,36 +37,20 @@ class AuthController extends Controller
 
         $userInfo['skills'] = $userSkills;
 
-        return HelperController::apiResponse(200, null, 'user', $userInfo);
+        return $this->successResponse(['user' => $userInfo], 200);
     }
 
-    /**
-     * Log the user out (Invalidate the token)
-     *
-     * @return JsonResponse
-     */
     public function logout()
     {
         $this->guard()->logout();
-        return HelperController::apiResponse(200, 'Successfully logged out');
+        return $this->successMessage('successfully logged out', 200);
     }
 
-    /**
-     * Refresh a token.
-     *
-     * @return JsonResponse
-     */
     public function refresh()
     {
         return $this->respondWithToken($this->guard()->refresh());
     }
 
-    /**
-     * Get the token array structure.
-     *
-     * @param string $token
-     * @return JsonResponse
-     */
     public function respondWithToken($token)
     {
         $data = [
@@ -94,20 +60,9 @@ class AuthController extends Controller
             'expires_in' => $this->guard()->factory()->getTTL() * 60
         ];
 
-        return HelperController::apiResponse(200, '', '', $data);
-
-        /*return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60
-        ]);*/
+        return $this->successResponse($data, 200);
     }
 
-    /**
-     * Get the guard to be used during authentication.
-     *
-     * @return Guard
-     */
     public function guard()
     {
         return Auth::guard();
