@@ -7,15 +7,13 @@ use Exception;
 use Hash;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
     public function updateProfile(Request $request)
     {
-        info(request('skills'));
-
         $request->validate([
             'name' => 'required|max:255',
-            'email' => 'required|email|unique:users,email,'.auth()->user()->id,
+            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
             'address' => 'required|max:955'
         ]);
 
@@ -24,20 +22,16 @@ class UserController extends Controller
         $skills = request('skills');
 
         $skills = collect($skills)->map(function ($skill) {
-           return $skill['code'];
+            return $skill['code'];
         });
 
-        try {
-            auth()->user()->update($requested_data);
-            auth()->user()->skills()->sync($skills);
-        } catch (Exception $e) {
-            return HelperController::apiResponse(500, $e->getMessage());
-        }
+        auth()->user()->update($requested_data);
+        auth()->user()->skills()->sync($skills);
 
         $user_info = auth()->user();
         $user_info['skills'] = request('skills');
 
-        return HelperController::apiResponse(200, null, 'user', $user_info);
+        return $this->successResponse(['user' => $user_info], 200);
     }
 
     public function checkPassword(Request $request)
@@ -48,11 +42,11 @@ class UserController extends Controller
 
         $check = Hash::check($request->old_password, auth()->user()->password);
 
-        if ($check){
-            return HelperController::apiResponse(200, 'password match');
+        if ($check) {
+            return $this->successMessage('password match', 200);
         }
 
-        return HelperController::apiResponse(404, 'password does not match');
+        return $this->errorMessage('password does not match', 404);
     }
 
     public function changePassword(Request $request)
@@ -61,13 +55,9 @@ class UserController extends Controller
             'password' => 'required|min:6|confirmed'
         ]);
 
-        try {
-            auth()->user()->update(['password' => Hash::make($request->password)]);
-        } catch (Exception $e) {
-            return HelperController::apiResponse(500, $e->getMessage());
-        }
+        auth()->user()->update(['password' => Hash::make($request->password)]);
 
-        return HelperController::apiResponse(200, 'password has been updated successful');
+        $this->successMessage('password has been updated successful', 200);
     }
 
     public function changeImage(Request $request)
@@ -83,7 +73,7 @@ class UserController extends Controller
             $image = HelperController::imageUpload('image');
             $requested_data['image'] = $image;
 
-            if (isset(auth()->user()->image)){
+            if (isset(auth()->user()->image)) {
                 HelperController::imageDelete(auth()->user()->image);
             }
         }
@@ -100,6 +90,6 @@ class UserController extends Controller
 
         $userInfo['skills'] = $userSkills;
 
-        return HelperController::apiResponse(200, null, 'user', $userInfo);
+        return $this->successResponse(['user' => $userInfo], 200);
     }
 }
