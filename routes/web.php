@@ -14,6 +14,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+
+    $data = [
+        [
+            'name' => 'A new comment.',
+        ],
+        [
+            'name' => 'Another new comment.',
+        ],
+    ];
+
+    \App\Skill::createMany($data);
+
+
     return view('welcome');
 });
 

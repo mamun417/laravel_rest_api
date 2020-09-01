@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth:api'], function ()
 
     // skill
     Route::get('skill-list', 'SkillController@getSkillList');
+    Route::apiResource('skills', 'SkillController');
 
     // user
     Route::patch('profile/update', 'UserController@updateProfile');
