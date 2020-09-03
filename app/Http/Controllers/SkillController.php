@@ -19,7 +19,7 @@ class SkillController extends ApiController
         $request->validate([
             'name' => 'required|array',
             'name.*' => 'required|max:25|distinct|unique:skills,name'
-        ],[
+        ], [
             'name.*.required' => 'The field is required.',
             'name.*.max' => 'The field may not be greater than 25 characters.',
             'name.*.distinct' => 'The field has a duplicate value.',
@@ -51,5 +51,11 @@ class SkillController extends ApiController
         }
 
         return [];
+    }
+
+    public function destroy(Skill $skill)
+    {
+        $skill->delete();
+        return $this->successResponse(['skill' => $skill], 200);
     }
 }
