@@ -10,23 +10,29 @@ class SkillController extends ApiController
 {
     public function index()
     {
-        $skills = Skill::all()->take(10);
+        $skills = Skill::latest()->get()->take(5);
         return $this->successResponse(['skills' => $skills], 200);
     }
 
     public function store(Request $request)
     {
-        info($request->all());
+        $request->validate([
+            'name' => 'required|array',
+            'name.*' => 'required|max:25|distinct|unique:skills,name'
+        ],[
+            'name.*.required' => 'The field is required.',
+            'name.*.max' => 'The field may not be greater than 25 characters.',
+            'name.*.distinct' => 'The field has a duplicate value.',
+            'name.*.unique' => 'The name has already exits.',
+        ]);
 
-//        $request->validate([
-//            'name' => 'required'
-//        ]);
-//
-//        $requested_data = $request->only(['name']);
-//
-//        $product = Product::create($requested_data);
-//
-//        return $this->successResponse(['skills' => $product], 200);
+        $requested_data = $request->only(['name']);
+
+        foreach ($requested_data['name'] as $name) {
+            Skill::firstOrCreate(['name' => $name]);
+        }
+
+        return $this->successResponse(['skills' => []], 200);
     }
 
     public function getSkillList()
