@@ -44,5 +44,10 @@ Route::group(['middleware' => 'auth:api'], function ()
     Route::post('password/check', 'UserController@checkPassword');
     Route::patch('password/change', 'UserController@changePassword');
     Route::post('change/image', 'UserController@changeImage');
+
+    Route::get('pdf', function () {
+        $pdf = PDF::loadView('pdf.pdf');
+        return $pdf->stream();
+    });
 });
 
