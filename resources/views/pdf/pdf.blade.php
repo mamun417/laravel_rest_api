@@ -7,23 +7,105 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
+          id="bootstrap-css">
+    <!------ Include the above in your HEAD tag ---------->
 
 </head>
 
 <body>
-    @for ($i = 0; $i < 10; $i++)
-        <div class="alert alert-success" role="alert">Oh snap! Change a few things up and try submitting again.</div>
-        <div class="alert alert-info" role="alert">Oh snap! Change a few things up and try submitting again.</div>
-        <div class="alert alert-warning" role="alert">Oh snap! Change a few things up and try submitting again.</div>
-        <div class="alert alert-danger" role="alert">Oh snap! Change a few things up and try submitting again.</div>
-    @endfor()
+
+<div class="col-10">
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="row p-5" style="padding-bottom: 5px!important;">
+                <div class="col-md-6">
+                    <img src="https://my.exonhost.com/assets/images/logo_dark.png">
+                </div>
+
+                <div class="col-md-6 text-right">
+                    <p class="font-weight-bold mb-1">Invoice #550</p>
+                    <p class="text-muted">Due to: 4 Dec, 2019</p>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row pb-5 p-5">
+                <div class="col-md-6">
+                    <p class="font-weight-bold mb-4">Client Information</p>
+                    <p class="mb-1">John Doe, Mrs Emma Downson</p>
+                    <p>Acme Inc</p>
+                    <p class="mb-1">Berlin, Germany</p>
+                    <p class="mb-1">6781 45P</p>
+                </div>
+
+                <div class="col-md-6 text-right">
+                    <p class="font-weight-bold mb-4">Payment Details</p>
+                    <p class="mb-1"><span class="text-muted">VAT: </span> 1425782</p>
+                    <p class="mb-1"><span class="text-muted">VAT ID: </span> 10253642</p>
+                    <p class="mb-1"><span class="text-muted">Payment Type: </span> Root</p>
+                    <p class="mb-1"><span class="text-muted">Name: </span> John Doe</p>
+                </div>
+            </div>
+
+            <div class="row p-5">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="border-0 text-uppercase small font-weight-bold">ID</th>
+                            <th class="border-0 text-uppercase small font-weight-bold">Description</th>
+                            <th class="border-0 text-uppercase small font-weight-bold">Quantity</th>
+                            <th class="border-0 text-uppercase small font-weight-bold">Unit Cost</th>
+                            <th class="border-0 text-uppercase small font-weight-bold">Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>LTS Versions</td>
+                            <td>21</td>
+                            <td>$321</td>
+                            <td>$3452</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Support</td>
+                            <td>234</td>
+                            <td>$6356</td>
+                            <td>$23423</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Sofware Collection</td>
+                            <td>4534</td>
+                            <td>$354</td>
+                            <td>$23434</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="d-flex flex-row-reverse p-4">
+                <div class="py-3 px-5 text-right">
+                    <div class="mb-2">Grand Total</div>
+                    <div class="h2 font-weight-light">$234,234</div>
+                </div>
+
+                <div class="py-3 px-5 text-right">
+                    <div class="mb-2">Discount</div>
+                    <div class="h2 font-weight-light">10%</div>
+                </div>
+
+                <div class="py-3 px-5 text-right">
+                    <div class="mb-2">Sub - Total amount</div>
+                    <div class="h2 font-weight-light">$32,432</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
