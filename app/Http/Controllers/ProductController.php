@@ -31,7 +31,7 @@ class ProductController extends ApiController
         $products = $products->latest()->paginate($per_page);
 
         if (request()->page > $products->lastPage()) {
-            return redirect($products->url($products->lastPage())."&search=$search&filter=$filter");
+            return redirect($products->url($products->lastPage()) . "&per_page=$per_page&search=$search&filter=$filter");
         }
 
         return $this->successResponse(['products' => $products], 200);
@@ -40,11 +40,11 @@ class ProductController extends ApiController
     public function countInfo()
     {
         $products = Product::all();
-        $count_active = $products->where('status',true)->count();
-        $count_inactive = $products->where('status',false)->count();
+        $count_active = $products->where('status', true)->count();
+        $count_inactive = $products->where('status', false)->count();
 
         $count_info = [
-            'total' => $count_active+$count_inactive,
+            'total' => $count_active + $count_inactive,
             'active' => $count_active,
             'inactive' => $count_inactive,
         ];
