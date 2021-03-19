@@ -1,6 +1,7 @@
 <?php
 
 use App\Skill;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,6 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+         $this->call(RoleSeeder::class);
+         $this->call(PermissionSeeder::class);
          $this->call(UserSeeder::class);
          $this->call(ProductSeeder::class);
         // factory(Skill::class, 200)->create();

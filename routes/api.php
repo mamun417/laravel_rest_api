@@ -29,6 +29,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth', 'namespace' => 'Ap
 
 Route::group(['middleware' => 'auth:api'], function ()
 {
+    Route::apiResource('roles', 'RoleManageController');
+
     // product
     Route::patch('products/change-status/{product}', 'ProductController@changeStatus');
     Route::get('products/count-info', 'ProductController@countInfo');
