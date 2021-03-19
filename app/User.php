@@ -4,14 +4,15 @@ namespace App;
 
 use App\Http\Controllers\HelperController;
 use App\Notifications\ResetPasswordNotification;
+use Eloquent;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
- * @method static create(array $requested_data)
- * @method static find($id)
+ * Class User
+ * @mixin Eloquent
  */
 class User extends Authenticatable implements JWTSubject
 {

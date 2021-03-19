@@ -9,7 +9,72 @@ use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {
-    public function updateProfile(Request $request)
+    public function index()
+    {
+        $per_page = request()->query('per_page') ?? 10;
+        $search = request()->query('search');
+
+        $users = User::latest();
+
+        if ($search) {
+            $search = '%' . $search . '%';
+            $users = $users->where('name', 'like', $search)
+                ->orWhere('email', 'like', $search)
+                ->orWhere('address', 'like', $search);
+        }
+
+        $users = $users->paginate($per_page);
+
+        if (request()->query('page') > $users->lastPage()) {
+            return redirect($users->url($users->lastPage()) . "&per_page=$per_page&search=$search");
+        }
+
+        return $this->successResponse(['users' => $users], 200);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => "required|string|max:50",
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+            'roles' => "required|array",
+            'roles.*' => "required",
+        ]);
+
+        $user = User::create($request->all());
+
+        return $this->successResponse(['user' => $user], 200);
+    }
+
+    public function show(User $user): \Illuminate\Http\JsonResponse
+    {
+        return $this->successResponse(['user' => $user], 200);
+    }
+
+    public function update(Request $request, User $user): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'name' => "required|string|max:50",
+            'email' => 'required|email|unique:users,email,'. $user->id,
+            'password' => 'nullable|min:8',
+            'roles' => "required|array",
+            'roles.*' => "required",
+        ]);
+
+        $user->update($request->all());
+
+        return $this->successResponse(['user' => $user], 200);
+    }
+
+    public function destroy(User $user): \Illuminate\Http\JsonResponse
+    {
+        $user->delete();
+
+        return $this->successResponse(['user' => $user], 200);
+    }
+
+    public function updateProfile(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'name' => 'required|max:255',
