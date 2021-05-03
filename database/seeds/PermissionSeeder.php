@@ -1,5 +1,6 @@
 <?php
 
+use App\PermissionModule;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
@@ -12,13 +13,21 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
+        DB::statement("SET foreign_key_checks=0");
+        DB::table('permissions')->truncate(); // first delete old data
+        DB::statement("SET foreign_key_checks=1");
+
         $modules = $this->modules();
 
         foreach ($modules as $module) {
+            $permission_module = PermissionModule::create([
+                'name' => $module['name']
+            ]);
+
             foreach ($module['permissions'] as $permission) {
                 Permission::create([
-                    'name' => $permission . ' ' . $module['name'],
-                    'module_name' => $module['name'],
+                    'permission_module_id' => $permission_module->id,
+                    'name' => $permission . ' ' . $permission_module->slug,
                     'guard_name' => 'api',
                 ]);
             }
@@ -29,13 +38,13 @@ class PermissionSeeder extends Seeder
     {
         return [
             [
-                'name' => 'home',
+                'name' => 'Home',
                 'permissions' => [
                     'view'
                 ]
             ],
             [
-                'name' => 'product',
+                'name' => 'Product',
                 'permissions' => [
                     'list',
                     'create',
@@ -45,7 +54,7 @@ class PermissionSeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'skill',
+                'name' => 'Skill',
                 'permissions' => [
                     'list',
                     'create',
@@ -53,7 +62,7 @@ class PermissionSeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'ecommerce',
+                'name' => 'Ecommerce',
                 'permissions' => [
                     'list',
                     'add to cart',
@@ -65,7 +74,7 @@ class PermissionSeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'pdf',
+                'name' => 'PDF',
                 'permissions' => [
                     'preview',
                     'download'
