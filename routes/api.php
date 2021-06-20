@@ -18,6 +18,12 @@ Route::put('password/reset', 'ApiAuth\ResetPasswordController@reset');
 
 Route::group(['prefix' => 'auth', 'namespace' => 'ApiAuth'], function () {
     Route::post('login', 'AuthController@login');
+
+    // socialite
+    Route::get('login/{provider}', 'SocialAuthController@redirect');
+    Route::get('login/{provider}/callback', 'SocialAuthController@callback');
+    Route::post('login/social', 'SocialAuthController@login');
+
     Route::post('refresh', 'AuthController@refresh');
 });
 
@@ -27,8 +33,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth', 'namespace' => 'Ap
 });
 // end auth
 
-Route::group(['middleware' => 'auth:api'], function ()
-{
+
+Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('roles', 'RoleManageController');
 
     // product

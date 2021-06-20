@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class RegisterController extends ApiController
 {
-    public function register(Request $request)
+    public function register(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'name' => 'required|max:255',

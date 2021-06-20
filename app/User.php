@@ -2,10 +2,8 @@
 
 namespace App;
 
-use App\Http\Controllers\HelperController;
 use App\Notifications\ResetPasswordNotification;
 use Eloquent;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -36,7 +34,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return array
      */
-    public function getJWTCustomClaims()
+    public function getJWTCustomClaims(): array
     {
         return [];
     }
@@ -47,7 +45,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'address', 'password', 'image'
+        'provider_id', 'provider', 'name', 'email', 'address', 'password', 'image'
     ];
 
     /**
@@ -72,13 +70,17 @@ class User extends Authenticatable implements JWTSubject
 
     public function getImageUrlAttribute()
     {
+        // check for social login user
+        if ($this->provider) return $this->image;
+
+
         $image_path = config('custom.image_path') . 'user';
         if ($this->image) {
             return preg_replace('/\s+/', '-', url("/$image_path/$this->image"));
         }
     }
 
-    public function skills()
+    public function skills(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Skill::class);
     }

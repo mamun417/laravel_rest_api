@@ -21,7 +21,7 @@ class ResetPasswordController extends ApiController
 
     use ResetsPasswords;
 
-    protected function sendResetResponse(Request $request, $response)
+    protected function sendResetResponse(Request $request, $response): \Illuminate\Http\JsonResponse
     {
         return $this->successMessage( 'password has been reset successful', 200);
     }

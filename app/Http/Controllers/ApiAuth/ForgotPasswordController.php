@@ -29,7 +29,7 @@ class ForgotPasswordController extends ApiController
         ]);
     }
 
-    protected function sendResetLinkResponse(Request $request, $response)
+    protected function sendResetLinkResponse(Request $request, $response): \Illuminate\Http\JsonResponse
     {
         return $this->successMessage('email has been send successful', 200);
     }

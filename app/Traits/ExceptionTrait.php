@@ -51,7 +51,7 @@ trait ExceptionTrait
         return $this->errorMessage('Unexpected Exception. Try later', 500);
     }
 
-    public function returnValidationErrors($e)
+    public function returnValidationErrors($e): \Illuminate\Http\JsonResponse
     {
         $errors = array_map(function ($item) {
             return $item[0];
