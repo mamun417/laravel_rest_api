@@ -36,6 +36,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth', 'namespace' => 'Ap
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('roles', 'RoleManageController');
+    Route::get('permission/modules', 'PermissionController@permissionModules');
 
     // product
     Route::patch('products/change-status/{product}', 'ProductController@changeStatus');

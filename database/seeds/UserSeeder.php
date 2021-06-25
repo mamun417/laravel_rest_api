@@ -25,6 +25,22 @@ class UserSeeder extends Seeder
             ]);
         }
 
+        // create manager
+        $manager_email = 'manager@test.com';
+        $manager = User::where('email', $manager_email)->first();
+
+        if (!$manager) {
+            User::create([
+                'name' => 'Manager Name',
+                'email' => $manager_email,
+                'address' => 'Dhaka',
+                'email_verified_at' => now(),
+                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+                'remember_token' => Str::random(10),
+            ]);
+        }
+
+
         factory(User::class, 5)->create();
     }
 }
