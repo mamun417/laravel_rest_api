@@ -42,12 +42,14 @@ class RoleManageController extends ApiController
 
         $role->syncPermissions($request->input('permissions'));
 
-        return $this->successResponse(['role' => $role], 200);
+        return $this->successResponse(['role' => $role]);
     }
 
-    public function show($id)
+    public function show(Role $role): \Illuminate\Http\JsonResponse
     {
-        //
+        $role->load('permissions');
+
+        return $this->successResponse(['role' => $role]);
     }
 
     public function update(Request $request, $id)
