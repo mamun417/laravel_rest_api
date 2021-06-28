@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleManageController extends ApiController
@@ -52,9 +51,19 @@ class RoleManageController extends ApiController
         return $this->successResponse(['role' => $role]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Role $role): \Illuminate\Http\JsonResponse
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $role->id,
+            'permissions' => 'required|array',
+            'permissions.*' => 'required',
+        ]);
+
+        $role->update(['name' => strtolower($request->name)]);
+
+        $role->syncPermissions($request->input('permissions'));
+
+        return $this->successResponse(['role' => $role]);
     }
 
     public function destroy(Role $role)
