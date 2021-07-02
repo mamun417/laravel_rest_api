@@ -12,7 +12,7 @@ trait ApiResponser
         return response()->json($data, $code);
     }
 
-    protected function successMessage($message, $code): \Illuminate\Http\JsonResponse
+    protected function successMessage($message, $code = 200): \Illuminate\Http\JsonResponse
     {
         $data = ['success' => true, 'message' => $message];
         return response()->json($data, $code);

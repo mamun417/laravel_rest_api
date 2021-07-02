@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Administrator;
 
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 

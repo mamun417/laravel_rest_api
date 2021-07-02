@@ -35,8 +35,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth', 'namespace' => 'Ap
 
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::apiResource('roles', 'RoleManageController');
-    Route::get('permission/modules', 'PermissionController@permissionModules');
+    // administrator
+    Route::group(['namespace' => 'Administrator'], function () {
+        Route::apiResource('admins', 'AdminController');
+        Route::apiResource('roles', 'RoleManageController');
+        Route::get('permission/modules', 'PermissionController@permissionModules');
+    });
 
     // product
     Route::patch('products/change-status/{product}', 'ProductController@changeStatus');
@@ -53,8 +57,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('password/check', 'UserController@checkPassword');
     Route::patch('password/change', 'UserController@changePassword');
     Route::post('change/image', 'UserController@changeImage');
-
-    Route::apiResource('users', 'UserController');
 
     Route::get('pdf', function () {
         $pdf = PDF::loadView('pdf.pdf');

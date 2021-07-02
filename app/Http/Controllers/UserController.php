@@ -9,49 +9,6 @@ use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {
-    public function index()
-    {
-        $per_page = request()->query('per_page') ?? 10;
-        $search = request()->query('search');
-
-        $users = User::latest();
-
-        if ($search) {
-            $search = '%' . $search . '%';
-            $users = $users->where('name', 'like', $search)
-                ->orWhere('email', 'like', $search)
-                ->orWhere('address', 'like', $search);
-        }
-
-        $users = $users->paginate($per_page);
-
-        if (request()->query('page') > $users->lastPage()) {
-            return redirect($users->url($users->lastPage()) . "&per_page=$per_page&search=$search");
-        }
-
-        return $this->successResponse(['users' => $users], 200);
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => "required|string|max:50",
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'roles' => "required|array",
-            'roles.*' => "required",
-        ]);
-
-        $user = User::create($request->all());
-
-        return $this->successResponse(['user' => $user], 200);
-    }
-
-    public function show(User $user): \Illuminate\Http\JsonResponse
-    {
-        return $this->successResponse(['user' => $user], 200);
-    }
-
     public function update(Request $request, User $user): \Illuminate\Http\JsonResponse
     {
         $request->validate([
@@ -64,14 +21,7 @@ class UserController extends ApiController
 
         $user->update($request->all());
 
-        return $this->successResponse(['user' => $user], 200);
-    }
-
-    public function destroy(User $user): \Illuminate\Http\JsonResponse
-    {
-        $user->delete();
-
-        return $this->successResponse(['user' => $user], 200);
+        return $this->successResponse(['user' => $user]);
     }
 
     public function updateProfile(Request $request): \Illuminate\Http\JsonResponse
@@ -96,19 +46,19 @@ class UserController extends ApiController
         $user_info = auth()->user();
         $user_info['skills'] = request('skills');
 
-        return $this->successResponse(['user' => $user_info], 200);
+        return $this->successResponse(['user' => $user_info]);
     }
 
-    public function checkPassword(Request $request)
+    public function checkPassword(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'old_password' => 'required'
         ]);
 
-        $check = Hash::check($request->old_password, auth()->user()->password);
+        $check = Hash::check($request->input('old_password'), auth()->user()->password);
 
         if ($check) {
-            return $this->successMessage('password match', 200);
+            return $this->successMessage('password match');
         }
 
         return $this->errorMessage('password does not match', 404);
@@ -120,12 +70,12 @@ class UserController extends ApiController
             'password' => 'required|min:6|confirmed'
         ]);
 
-        auth()->user()->update(['password' => Hash::make($request->password)]);
+        auth()->user()->update(['password' => Hash::make($request->input('password'))]);
 
-        $this->successMessage('password has been updated successful', 200);
+        $this->successMessage('password has been updated successful');
     }
 
-    public function changeImage(Request $request)
+    public function changeImage(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'image' => 'required'
@@ -133,7 +83,7 @@ class UserController extends ApiController
 
         $requested_data = $request->only('image');
 
-        if ($request->image) {
+        if ($request->input('image')) {
 
             $image = HelperController::imageUpload('image');
             $requested_data['image'] = $image;
@@ -155,6 +105,6 @@ class UserController extends ApiController
 
         $userInfo['skills'] = $userSkills;
 
-        return $this->successResponse(['user' => $userInfo], 200);
+        return $this->successResponse(['user' => $userInfo]);
     }
 }
