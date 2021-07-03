@@ -9,21 +9,6 @@ use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {
-    public function update(Request $request, User $user): \Illuminate\Http\JsonResponse
-    {
-        $request->validate([
-            'name' => "required|string|max:50",
-            'email' => 'required|email|unique:users,email,'. $user->id,
-            'password' => 'nullable|min:8',
-            'roles' => "required|array",
-            'roles.*' => "required",
-        ]);
-
-        $user->update($request->all());
-
-        return $this->successResponse(['user' => $user]);
-    }
-
     public function updateProfile(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([

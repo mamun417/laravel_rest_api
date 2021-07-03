@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Administrator;
 
 use App\Http\Controllers\ApiController;
-use App\Http\Controllers\Helpers\FileHandler;
-use App\Http\Requests\AdminRequest;
-use App\Models\Admin;
 use App\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
 
 class AdminController extends ApiController
 {
@@ -18,46 +15,74 @@ class AdminController extends ApiController
         $per_page = request()->query('per_page') ?? 10;
         $search = request()->query('search');
 
-        $users = User::latest();
+        $admins = User::whereNotIn('id', [1])->latest();
 
         if ($search) {
             $search = '%' . $search . '%';
-            $users = $users->where('name', 'like', $search)
+            $admins = $admins->where('name', 'like', $search)
                 ->orWhere('email', 'like', $search)
                 ->orWhere('address', 'like', $search);
         }
 
-        $users = $users->paginate($per_page);
+        $admins = $admins->paginate($per_page);
 
-        if (request()->query('page') > $users->lastPage()) {
-            return redirect($users->url($users->lastPage()) . "&per_page=$per_page&search=$search");
+        if (request()->query('page') > $admins->lastPage()) {
+            return redirect($admins->url($admins->lastPage()) . "&per_page=$per_page&search=$search");
         }
 
-        return $this->successResponse(['users' => $users]);
+        return $this->successResponse(['admins' => $admins]);
     }
 
-    public function store(AdminRequest $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        DB::beginTransaction();
+        $request->validate([
+            'name' => "required|string|max:50",
+            'email' => 'required|email|unique:users',
+            'address' => 'nullable',
+            'password' => 'required|min:8',
+            'roles' => "required|array",
+            'roles.*' => "required|distinct|exists:roles,id",
+        ], [
+                //extra messages
+            ] + $this->getRoleValidationMessages($request));
 
-        try {
-            $has_pass = Hash::make($request->password);
+        $admin = User::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+        ]);
 
-            $user = Admin::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => $has_pass,
-            ]);
+        $admin->assignRole('admin');
 
-            $user->syncRoles($request->type);
+        return $this->successResponse(['admin' => $admin]);
+    }
 
-            DB::commit();
-            return back()->with('success', 'Admin Successfully Created');
+    public function getRoleValidationMessages($request): array
+    {
+        $role_ids = implode(",", Role::all()->pluck('id')->toArray());
 
-        } catch (\Exception $exception) {
-            report($exception);
-            DB::rollBack();
-            return redirect()->back()->with('error', $exception->getMessage());
+        $roles_validation_messages = [];
+
+        foreach ($request->input('roles') as $key => $val) {
+            $roles_validation_messages['roles.' . $key . '.exists'] = "The selected role $val is invalid. valid ids ($role_ids)";
+            $roles_validation_messages['roles.' . $key . '.distinct'] = "The roles $val field has a duplicate value.";
         }
+
+        return $roles_validation_messages;
+    }
+
+    public function update(Request $request, User $admin): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'name' => "required|string|max:50",
+            'email' => 'required|email|unique:users,email,' . $admin->id,
+            'password' => 'nullable|min:8',
+            'roles' => "required|array",
+            'roles.*' => "required",
+        ]);
+
+        $admin->update($request->all());
+
+        return $this->successResponse(['user' => $admin]);
     }
 }
