@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use Exception;
 use Hash;
 use Illuminate\Http\Request;
 
@@ -68,9 +67,10 @@ class UserController extends ApiController
 
         $requested_data = $request->only('image');
 
-        if ($request->input('image')) {
+        if ($request->file('image')) {
 
             $image = HelperController::imageUpload('image');
+
             $requested_data['image'] = $image;
 
             if (isset(auth()->user()->image)) {
