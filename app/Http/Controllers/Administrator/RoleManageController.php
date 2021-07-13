@@ -81,4 +81,13 @@ class RoleManageController extends ApiController
 
         return $this->successResponse(['role' => $role]);
     }
+
+    public function list(): \Illuminate\Http\JsonResponse
+    {
+        $roles = Role::with('permissions')
+            ->latest()
+            ->get();
+
+        return $this->successResponse(['roles' => $roles]);
+    }
 }

@@ -100,7 +100,7 @@ class AdminController extends ApiController
             'name' => "required|string|max:50",
             'email' => 'required|email|unique:users,email,' . $admin->id,
             'address' => 'nullable',
-            'password' => 'required|min:8',
+            'password' => 'nullable|min:8',
             'roles' => "required|array",
             'roles.*' => "required|distinct|exists:roles,id",
             'permissions' => "nullable|array",

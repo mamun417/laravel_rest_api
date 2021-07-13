@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     // administrator
     Route::group(['namespace' => 'Administrator'], function () {
         Route::apiResource('admins', 'AdminController');
+        Route::get('roles/list', 'RoleManageController@list');
         Route::apiResource('roles', 'RoleManageController');
         Route::get('permission/modules', 'PermissionController@permissionModules');
     });
