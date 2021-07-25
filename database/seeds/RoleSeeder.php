@@ -26,7 +26,7 @@ class RoleSeeder extends Seeder
             'guard_name' => 'api'
         ]);
 
-        $admin = User::where('email', 'admin@test.com')->first();
+        $admin = User::find(1)->first();
 
         if ($admin) {
             $admin->assignRole($role);

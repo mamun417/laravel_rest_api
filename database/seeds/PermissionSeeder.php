@@ -27,7 +27,7 @@ class PermissionSeeder extends Seeder
             foreach ($module['permissions'] as $permission) {
                 Permission::create([
                     'permission_module_id' => $permission_module->id,
-                    'name' => $permission . ' ' . $permission_module->slug,
+                    'name' => Str::slug($permission . ' ' . $permission_module->slug),
                     'guard_name' => 'api',
                 ]);
             }

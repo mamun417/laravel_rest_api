@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Product;
-use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends ApiController
 {
+    public function __construct()
+    {
+//        $this->middleware('permission:contact create|contact edit')->only(['index']);
+        $this->middleware('permission:create-product')->only(['store']);
+//        $this->middleware('permission:contact edit')->only(['edit', 'update']);
+    }
+
     public function index()
     {
         $per_page = request()->per_page ?? 2;

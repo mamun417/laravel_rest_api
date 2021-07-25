@@ -12,6 +12,11 @@ use Spatie\Permission\Models\Role;
 
 class AdminController extends ApiController
 {
+    public function __construct()
+    {
+        $this->middleware('role:admin');
+    }
+
     public function index()
     {
         $per_page = request()->query('per_page') ?? 10;

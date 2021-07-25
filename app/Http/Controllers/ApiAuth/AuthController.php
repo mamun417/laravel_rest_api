@@ -25,30 +25,9 @@ class AuthController extends ApiController
         return $this->errorMessage('email or password does not match', 404);
     }
 
-    public function me(): \Illuminate\Http\JsonResponse
+    public function guard()
     {
-        $userInfo = $this->guard()->user();
-
-        $userSkills = User::find($this->guard()->id())->first()->skills;
-
-        $userSkills = $userSkills->map(function ($item, $key) {
-            return ['label' => $item->name, 'code' => $item->id];
-        });
-
-        $userInfo['skills'] = $userSkills;
-
-        return $this->successResponse(['user' => $userInfo], 200);
-    }
-
-    public function logout(): \Illuminate\Http\JsonResponse
-    {
-        $this->guard()->logout();
-        return $this->successMessage('successfully logged out', 200);
-    }
-
-    public function refresh(): \Illuminate\Http\JsonResponse
-    {
-        return $this->respondWithToken($this->guard()->refresh());
+        return Auth::guard();
     }
 
     public function respondWithToken($token): \Illuminate\Http\JsonResponse
@@ -63,8 +42,29 @@ class AuthController extends ApiController
         return $this->successResponse($data, 200);
     }
 
-    public function guard()
+    public function me(): \Illuminate\Http\JsonResponse
     {
-        return Auth::guard();
+        $userInfo = $this->guard()->user()->load(['roles', 'roles.permissions', 'permissions']);
+
+        $userInfo['skills'] = User::find($this->guard()->id())->skills->mapWithKeys(function ($skill, $key) {
+            $arr = [];
+
+            $arr[$key] = ['label' => $skill->name, 'code' => $skill->id];
+
+            return $arr;
+        });
+
+        return $this->successResponse(['user' => $userInfo]);
+    }
+
+    public function logout(): \Illuminate\Http\JsonResponse
+    {
+        $this->guard()->logout();
+        return $this->successMessage('successfully logged out', 200);
+    }
+
+    public function refresh(): \Illuminate\Http\JsonResponse
+    {
+        return $this->respondWithToken($this->guard()->refresh());
     }
 }
