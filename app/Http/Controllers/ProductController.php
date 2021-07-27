@@ -9,9 +9,11 @@ class ProductController extends ApiController
 {
     public function __construct()
     {
-//        $this->middleware('permission:contact create|contact edit')->only(['index']);
+        $this->middleware('permission:list-product')->only(['index']);
         $this->middleware('permission:create-product')->only(['store']);
-//        $this->middleware('permission:contact edit')->only(['edit', 'update']);
+        $this->middleware('permission:update-product')->only(['update']);
+        $this->middleware('permission:delete-product')->only(['destroy']);
+        $this->middleware('permission:status-product')->only(['changeStatus']);
     }
 
     public function index()
@@ -43,7 +45,7 @@ class ProductController extends ApiController
         return $this->successResponse(['products' => $products], 200);
     }
 
-    public function countInfo()
+    public function countInfo(): \Illuminate\Http\JsonResponse
     {
         $products = Product::all();
         $count_active = $products->where('status', true)->count();
@@ -58,7 +60,7 @@ class ProductController extends ApiController
         return $this->successResponse(['count_info' => $count_info], 200);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'name' => 'required',
@@ -79,12 +81,12 @@ class ProductController extends ApiController
         return $this->successResponse(['product' => $product], 200);
     }
 
-    public function show(Product $product)
+    public function show(Product $product): \Illuminate\Http\JsonResponse
     {
         return $this->successResponse(['product' => $product], 200);
     }
 
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Product $product): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'name' => 'required|max:255|unique:products,name,' . $product->id,
@@ -109,7 +111,7 @@ class ProductController extends ApiController
         return $this->successResponse(['product' => $product], 200);
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request): \Illuminate\Http\JsonResponse
     {
         $products = Product::whereIn('id', $request->ids);
 
@@ -122,7 +124,7 @@ class ProductController extends ApiController
         return $this->successResponse(['product' => ['ids' => $request->ids]], 200);
     }
 
-    public function changeStatus(Product $product)
+    public function changeStatus(Product $product): \Illuminate\Http\JsonResponse
     {
         $product->update(['status' => !$product->status]);
         return $this->successResponse(['product' => $product], 200);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiAuth;
 use App\Http\Controllers\ApiController;
 use App\User;
 use Auth;
+use Hash;
 use Illuminate\Http\Request;
 
 class AuthController extends ApiController
@@ -66,5 +67,21 @@ class AuthController extends ApiController
     public function refresh(): \Illuminate\Http\JsonResponse
     {
         return $this->respondWithToken($this->guard()->refresh());
+    }
+
+    public function adminList(): \Illuminate\Http\JsonResponse
+    {
+        $admins = User::all();
+
+        return $this->successResponse(['admins' => $admins]);
+    }
+
+    public function changeAdminPasswordForBeforeLogin($admin_id, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $admin = User::find($admin_id);
+
+        $admin->update(['password' => Hash::make($request->input('password'))]);
+
+        return $this->successResponse(['admin' => $admin]);
     }
 }

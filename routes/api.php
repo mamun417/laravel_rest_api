@@ -25,6 +25,11 @@ Route::group(['prefix' => 'auth', 'namespace' => 'ApiAuth'], function () {
     Route::post('login/social', 'SocialAuthController@login');
 
     Route::post('refresh', 'AuthController@refresh');
+
+    // admin list
+    Route::get('admin/list', 'AuthController@adminList');
+    // change admin password before login to get correct credential for login
+    Route::post('admins/change-password/before-login/{admin_id}', 'AuthController@changeAdminPasswordForBeforeLogin');
 });
 
 Route::group(['middleware' => 'auth:api', 'prefix' => 'auth', 'namespace' => 'ApiAuth'], function () {
