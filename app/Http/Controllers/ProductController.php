@@ -47,17 +47,15 @@ class ProductController extends ApiController
 
     public function countInfo(): \Illuminate\Http\JsonResponse
     {
-        $products = Product::all();
-        $count_active = $products->where('status', true)->count();
-        $count_inactive = $products->where('status', false)->count();
+        $count_info = Product::all()
+            ->groupBy('status')
+            ->mapWithKeys(function ($product, $status) {
+                return [$status ? 'active' : 'inactive' => count($product)];
+            });
 
-        $count_info = [
-            'total' => $count_active + $count_inactive,
-            'active' => $count_active,
-            'inactive' => $count_inactive,
-        ];
+        $count_info['total'] = $count_info['active'] + $count_info['inactive'];
 
-        return $this->successResponse(['count_info' => $count_info], 200);
+        return $this->successResponse(['count_info' => $count_info]);
     }
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
